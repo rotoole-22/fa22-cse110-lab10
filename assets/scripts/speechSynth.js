@@ -29,6 +29,10 @@ function bindListeners() {
   talkBtn.addEventListener('click', () => {
     let textToSpeak = textarea.value;
     let utterThis = new SpeechSynthesisUtterance(textToSpeak);
+    if(document.body.contains(document.getElementById('volume'))) {
+      let volume = document.getElementById('volume').value;
+      utterThis.volume = volume/100;
+    }
     utterThis.voice = voices[getOptionIndex()];
     synth.speak(utterThis);
     openMouth();

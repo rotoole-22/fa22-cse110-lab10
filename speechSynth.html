@@ -11,6 +11,8 @@
   <!-- Main Stylesheet & Scripts -->
   <link rel="stylesheet" href="assets/styles/global.css" />
   <script src="assets/scripts/speechSynth.js" type="module"></script>
+
+  <script src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>
 </head>
 
 <body>
@@ -32,6 +34,30 @@
       <button>Press to Talk</button>
     </section>
   </main>
+  <script>
+    // Set up the user properties. This user should appear on your LaunchDarkly users dashboard
+    // soon after you run the demo.
+    var user = {
+      key: (Math.random() + 1).toString(36).substring(7),
+    };
+
+    // Create a new LDClient instance with your environment-specific SDK key
+    var ldclient = LDClient.initialize('638ec1b4704a8d1151bec8a9', user);
+
+    function render() {
+      var flagValue = ldclient.variation('Speech-volume-slider', false);
+      if (flagValue) {
+        let beforeVolume = document.querySelector('select');
+        let slider = document.createElement('input');
+        slider.type = 'range'; slider.name = 'volume'; slider.id = 'volume'; slider.value = '50'; slider.min = '0'; slider.max = '100'; slider.step = 1;
+        beforeVolume.after("Volume:", slider);
+      }
+      console.log("SDK successfully connected! The value of Speech-volume-slider is " + flagValue + " for " + user.key)
+    }
+
+    ldclient.on('ready', render);
+    ldclient.on('change', render);
+  </script>
 </body>
 
 </html>
